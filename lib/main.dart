@@ -82,8 +82,12 @@ class _CalculatorState extends State<Calculator> {
         if (current != 0) {
           result = prev / current;
         } else {
-          _display = 'Error';
-          _clear();
+          setState(() {
+            _display = 'Error';
+          });
+          Future.delayed(const Duration(seconds: 1), () {
+            _clear();
+          });
           return;
         }
         break;
