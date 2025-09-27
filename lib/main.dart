@@ -114,6 +114,28 @@ class _CalculatorState extends State<Calculator> {
     });
   }
 
+  void _onDecimalPressed() {
+    setState(() {
+      if (_waitingForNewValue) {
+        _display = '$_previousValue$_operator${0}.';
+        _waitingForNewValue = false;
+      } else {
+        String currentNumber = _getCurrentNumber();
+        if (!currentNumber.contains('.')) {
+          _display = _display == '0' ? '0.' : '$_display.';
+        }
+      }
+    });
+  }
+
+  String _getCurrentNumber() {
+    if (_waitingForNewValue || _operator.isEmpty) {
+      return _display;
+    } else {
+      return _display.substring(_previousValue.length + 1);
+    }
+  }
+
   Widget _buildButton(String text, {Color? color, Color? textColor}) {
     return Expanded(
       child: Padding(
@@ -124,6 +146,8 @@ class _CalculatorState extends State<Calculator> {
               _clear();
             } else if (text == '=') {
               _onEqualsPressed();
+            } else if (text == '.') {
+              _onDecimalPressed();
             } else if (['+', '-', '*', '/'].contains(text)) {
               _onOperatorPressed(text);
             } else {
@@ -245,7 +269,7 @@ class _CalculatorState extends State<Calculator> {
                             ),
                           ),
                         ),
-                        _buildButton('', color: Colors.grey[300]),
+                        _buildButton('.'),
                         _buildButton('=', color: Colors.orange, textColor: Colors.white),
                       ],
                     ),
